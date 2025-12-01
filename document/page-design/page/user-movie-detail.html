@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>《沙丘2》 - MovieTicket</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", Helvetica, Arial, sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 40px;
+    }
+    .header {
+      margin-bottom: 40px;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .breadcrumb {
+      margin-top: 8px;
+      color: #666;
+      font-size: 14px;
+    }
+    .breadcrumb a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    /* —————— 影片信息 —————— */
+    .movie-section {
+      margin-bottom: 48px;
+    }
+    .movie-header {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    .poster {
+      width: 260px;
+      height: 360px;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 16px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .info {
+      flex: 1;
+    }
+    .movie-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    .rating {
+      display: inline-block;
+      background: #e6f7ff;
+      color: #1890ff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-right: 12px;
+    }
+    .formats {
+      display: inline-block;
+      background: #f6ffed;
+      color: #52c41a;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .meta {
+      margin: 20px 0;
+      font-size: 16px;
+      color: #444;
+    }
+    .meta strong {
+      color: #000;
+      margin-right: 8px;
+    }
+    .description {
+      font-size: 16px;
+      color: #555;
+      margin: 24px 0;
+      line-height: 1.7;
+    }
+
+    /* —————— 场次 —————— */
+    .showtimes-section h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 24px;
+    }
+    .date-tabs {
+      margin-bottom: 24px;
+    }
+    .date-tab {
+      display: inline-block;
+      padding: 6px 20px;
+      background: #f0f0f0;
+      border-radius: 20px;
+      margin-right: 12px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .date-tab.active {
+      background: #1890ff;
+      color: white;
+    }
+    .times {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .time-btn {
+      padding: 10px 24px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .time-btn:hover {
+      border-color: #1890ff;
+      background: #e6f7ff;
+    }
+    .time-btn.available {
+      background: #1890ff;
+      color: white;
+      border-color: #1890ff;
+    }
+    .time-btn.available:hover {
+      background: #40a9ff;
+    }
+    .time-btn.sold-out {
+      background: #fafafa;
+      color: #aaa;
+      text-decoration: line-through;
+      cursor: not-allowed;
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 16px;
+      }
+      .movie-header {
+        flex-direction: column;
+      }
+      .poster {
+        width: 100%;
+        max-width: 300px;
+        height: 320px;
+        margin-bottom: 24px;
+      }
+      .times {
+        gap: 12px;
+      }
+      .time-btn {
+        padding: 8px 16px;
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部导航 -->
+    <div class="header">
+      <a href="user-home.html" class="logo">🎬 MovieTicket</a>
+      <div class="breadcrumb">
+        <a href="user-home.html">首页</a> / 正在热映 / 《沙丘2》
+      </div>
+    </div>
+
+    <!-- 影片详情 -->
+    <div class="movie-section">
+      <div class="movie-header">
+        <div class="poster">《沙丘2》<br/>官方海报</div>
+        <div class="info">
+          <h1 class="movie-title">沙丘2 Dune: Part Two</h1>
+          <div>
+            <span class="rating">⭐ 8.9</span>
+            <span class="formats">IMAX</span>
+            <span class="formats">杜比全景声</span>
+          </div>
+
+          <div class="meta">
+            <div><strong>类型：</strong>科幻 / 冒险 / 史诗</div>
+            <div><strong>片长：</strong>166分钟</div>
+            <div><strong>导演：</strong>丹尼斯·维伦纽瓦</div>
+            <div><strong>主演：</strong>提莫西·查拉梅、赞达亚、奥斯汀·巴特勒</div>
+          </div>
+
+          <p class="description">
+            在厄拉科斯星球上，保罗·厄崔迪与弗雷曼人结盟，踏上复仇与救赎之路。
+            面对哈克南家族的残暴统治和皇帝的阴谋，他必须决定成为救世主，还是毁灭者。
+            视觉震撼、配乐恢弘，年度必看科幻巨制！
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 场次选择 -->
+    <div class="showtimes-section">
+      <h2>📅 选择观影场次</h2>
+
+      <div class="date-tabs">
+        <span class="date-tab active">今天 12/01</span>
+        <span class="date-tab">明天 12/02</span>
+        <span class="date-tab">后天 12/03</span>
+      </div>
+
+      <div class="times">
+        <button class="time-btn available" data-time="10:30">10:30</button>
+        <button class="time-btn available" data-time="13:45">13:45</button>
+        <button class="time-btn sold-out">16:20</button>
+        <button class="time-btn available" data-time="19:30">19:30</button>
+        <button class="time-btn available" data-time="21:50">21:50</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 点击可用场次，跳转到选座页面
+    document.querySelectorAll('.time-btn.available').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const time = this.getAttribute('data-time');
+        const movie = '沙丘2';
+        const date = '2025-12-01'; // 可根据 active 日期动态获取
+
+        // 构造 URL 参数（简单编码）
+        const url = `./user-seat-select.html?movie=${encodeURIComponent(movie)}&date=${date}&time=${encodeURIComponent(time)}`;
+        window.location.href = url;
+      });
+    });
+
+    // 日期标签切换（可扩展）
+    document.querySelectorAll('.date-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.date-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        // 实际项目中：重新加载该日期的场次数据
+      });
+    });
+  </script>
+</body>
+</html>

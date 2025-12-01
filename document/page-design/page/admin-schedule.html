@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>排片管理 - MovieTicket Admin</title>
+  <style>
+    :root { --el-color-primary: #409EFF; --el-bg-color: #f5f7fa; --el-border-color: #dcdfe6; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:sans-serif; }
+    body { background:var(--el-bg-color); padding:20px; }
+    .sidebar { width:200px; position:fixed; height:100vh; background:white; border-right:1px solid var(--el-border-color); padding:20px 0; }
+    .main { margin-left:220px; padding:20px; }
+    .menu-item { padding:12px 24px; cursor:pointer; color:#606266; }
+    .menu-item:hover { background:#ecf5ff; color:var(--el-color-primary); }
+    .menu-item:nth-child(3) { background:#ecf5ff; color:var(--el-color-primary); }
+    .form-row { display:flex; gap:16px; margin-bottom:20px; max-width:600px; flex-wrap:wrap; }
+    label { display:block; margin-bottom:6px; font-weight:500; }
+    input, select { width:100%; padding:8px; border:1px solid var(--el-border-color); border-radius:4px; }
+    .btn-primary { padding:8px 16px; background:var(--el-color-primary); color:white; border:none; border-radius:4px; cursor:pointer; }
+    table { width:100%; border-collapse:collapse; background:white; margin-top:20px; border-radius:8px; overflow:hidden; }
+    th, td { padding:12px; text-align:left; border-bottom:1px solid var(--el-border-color); }
+    th { background:#f8f9fa; }
+    .btn-danger { padding:4px 10px; background:#fef0f0; color:#F56C6C; border:none; border-radius:4px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div style="padding:0 24px 20px; font-weight:bold; color:var(--el-color-primary);">MovieTicket Admin</div>
+    <div class="menu-item">仪表盘</div>
+    <div class="menu-item">影片管理</div>
+    <div class="menu-item">排片管理</div>
+    <div class="menu-item">订单管理</div>
+    <div class="menu-item">用户管理</div>
+  </div>
+
+  <div class="main">
+    <h1>📅 排片管理（场次管理）</h1>
+    <p style="color:#606266; margin-bottom:16px;">为已存在的影片添加放映场次</p>
+
+    <!-- 新增场次表单 -->
+    <div class="form-row">
+      <div style="flex:1; min-width:200px;">
+        <label>选择影片</label>
+        <select>
+          <option>奥本海默</option>
+          <option>沙丘2</option>
+          <option>头脑特工队2</option>
+        </select>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <label>影厅</label>
+        <select>
+          <option>1号厅（IMAX）</option>
+          <option>2号厅</option>
+          <option>3号厅</option>
+        </select>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <label>开始时间</label>
+        <input type="datetime-local" value="2025-12-01T19:00" />
+      </div>
+      <div style="flex:1; min-width:120px;">
+        <label>票价 (¥)</label>
+        <input type="number" value="45" />
+      </div>
+    </div>
+
+    <button class="btn-primary">+ 添加场次</button>
+
+    <!-- 场次列表 -->
+    <h2 style="margin-top:30px;">当前排片</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>影片</th>
+          <th>影厅</th>
+          <th>放映时间</th>
+          <th>结束时间</th>
+          <th>票价</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>奥本海默</td>
+          <td>3号厅</td>
+          <td>2025-12-01 19:00</td>
+          <td>2025-12-01 22:00</td>
+          <td>¥45</td>
+          <td>
+            <button class="btn-primary" style="padding:4px 8px; font-size:13px;">编辑</button>
+            <button class="btn-danger">删除</button>
+          </td>
+        </tr>
+        <tr>
+          <td>沙丘2</td>
+          <td>1号厅（IMAX）</td>
+          <td>2025-12-01 20:30</td>
+          <td>2025-12-01 23:15</td>
+          <td>¥65</td>
+          <td>
+            <button class="btn-primary" style="padding:4px 8px; font-size:13px;">编辑</button>
+            <button class="btn-danger">删除</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

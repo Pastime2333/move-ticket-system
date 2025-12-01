@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>首页 - MovieTicket</title>
+  <style>
+    :root {
+      --el-color-primary: #409EFF;
+      --el-border-color: #dcdfe6;
+      --el-bg-color: #f5f7fa;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    body {
+      background: var(--el-bg-color);
+      color: #303133;
+    }
+
+    /* 导航栏 */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      height: 60px;
+      background: white;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: var(--el-color-primary);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+    }
+    .nav-links a {
+      color: #606266;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--el-color-primary);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .btn-profile {
+      padding: 6px 16px;
+      background: var(--el-color-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: opacity 0.2s;
+    }
+    .btn-profile:hover {
+      opacity: 0.9;
+    }
+
+    /* 主体容器 */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* 横幅区域 */
+    .hero {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+      border-radius: 12px;
+      padding: 80px 60px;
+      margin: 40px 0 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    .hero-content {
+      flex: 1;
+      max-width: 600px;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    .hero p {
+      font-size: 18px;
+      color: #606266;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .btn-browse {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--el-color-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .btn-browse:hover {
+      background: #66b1ff;
+    }
+
+    /* 热门影片 */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 60px 0 24px;
+    }
+    .section-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #303133;
+    }
+    .view-all {
+      color: var(--el-color-primary);
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+    }
+    .movie-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: center;
+    }
+    .movie-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    .poster {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #909399;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .movie-info {
+      padding: 16px 10px;
+    }
+    .movie-info h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .movie-info .rating {
+      color: #E6A23C;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* 底部留白 */
+    footer {
+      height: 80px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <div class="navbar">
+    <a href="user-home.html" class="logo">🎬 MovieTicket</a>
+    <div class="nav-links">
+      <a href="user-home.html" class="active">首页</a>
+      <a href="#">影院</a>
+      <a href="#">优惠</a>
+      <a href="user-orders.html">我的订单</a>
+    </div>
+    <div class="nav-right">
+      <a href="user-profile.html" class="btn-profile">个人中心</a>
+    </div>
+  </div>
+
+  <!-- 页面主体 -->
+  <div class="container">
+    <!-- 横幅 -->
+    <div class="hero">
+      <div class="hero-content">
+        <h1>发现好电影，一键购票</h1>
+        <p>海量影片、实时排片、舒适选座，尽在 MovieTicket。立即开启您的影院之旅！</p>
+        <a href="#now-playing" class="btn-browse">立即选片</a>
+      </div>
+    </div>
+
+    <!-- 热门影片 -->
+    <div id="now-playing">
+      <div class="section-header">
+        <h2 class="section-title">正在热映</h2>
+        <a href="#" class="view-all">查看更多 →</a>
+      </div>
+      <div class="movies-grid">
+        <div class="movie-card" onclick="location.href='user-movie-detail.html'">
+          <div class="poster">《奥本海默》</div>
+          <div class="movie-info">
+            <h3>奥本海默</h3>
+            <div class="rating">⭐ 8.9</div>
+          </div>
+        </div>
+        <div class="movie-card" onclick="location.href='user-movie-detail.html'">
+          <div class="poster">《沙丘2》</div>
+          <div class="movie-info">
+            <h3>沙丘2</h3>
+            <div class="rating">⭐ 8.7</div>
+          </div>
+        </div>
+        <div class="movie-card" onclick="location.href='user-movie-detail.html'">
+          <div class="poster">《头脑特工队2》</div>
+          <div class="movie-info">
+            <h3>头脑特工队2</h3>
+            <div class="rating">⭐ 9.1</div>
+          </div>
+        </div>
+        <div class="movie-card" onclick="location.href='user-movie-detail.html'">
+          <div class="poster">《死侍3》</div>
+          <div class="movie-info">
+            <h3>死侍3</h3>
+            <div class="rating">⭐ 8.5</div>
+          </div>
+        </div>
+        <div class="movie-card" onclick="location.href='user-movie-detail.html'">
+          <div class="poster">《年会不能停！》</div>
+          <div class="movie-info">
+            <h3>年会不能停！</h3>
+            <div class="rating">⭐ 8.3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer></footer>
+</body>
+</html>

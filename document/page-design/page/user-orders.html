@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的订单 - MovieTicket</title>
+  <style>
+    :root {
+      --primary: #409EFF;
+      --text: #24292f;
+      --text-muted: #586069;
+      --border: #e1e4e8;
+      --bg-canvas: #f6f8fa;
+      --bg-card: #ffffff;
+      --sidebar-width: 280px;
+      --status-waiting: #F5A623;   /* 待支付 */
+      --status-success: #409EFF;   /* 已出票 */
+      --status-completed: #6a737d; /* 已完成 */
+      --status-cancelled: #d73a49; /* 已取消 */
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .profile-layout {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 40px;
+      gap: 32px;
+    }
+
+    /* —————— 左侧栏 —————— */
+    .profile-sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+    }
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .avatar-xl {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: #999;
+      margin-bottom: 16px;
+    }
+    .profile-name {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .profile-login {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      gap: 8px;
+    }
+    .menu-item:hover,
+    .menu-item.active {
+      color: var(--primary);
+    }
+    .menu-item.active {
+      position: relative;
+    }
+    .menu-item.active::before {
+      content: "";
+      position: absolute;
+      left: -16px;
+      width: 3px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    .menu-item.logout-item {
+      color: #6a737d;
+      font-weight: normal;
+    }
+    .menu-item.logout-item:hover {
+      color: #d73a49;
+    }
+
+    /* —————— 主内容区 —————— */
+    .profile-main {
+      flex: 1;
+    }
+    .breadcrumb {
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* 订单项 */
+    .order-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .order-movie-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .order-status {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 500;
+    }
+    .status-waiting { background: var(--status-waiting); }
+    .status-success { background: var(--status-success); }
+    .status-completed { background: var(--status-completed); color: white; }
+    .status-cancelled { background: var(--status-cancelled); }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .detail-item strong {
+      color: var(--text);
+      margin-right: 6px;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-outline:hover {
+      background: #f0f7ff;
+    }
+
+    /* 空状态（当前未启用） */
+    .empty-state {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--text-muted);
+    }
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .empty-state p {
+      margin-bottom: 24px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: 1px solid var(--primary);
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: #54a3ff;
+    }
+
+    /* 加载更多 */
+    .load-more {
+      text-align: center;
+      padding: 16px;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .load-more:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-layout">
+    <!-- 左侧栏 -->
+    <aside class="profile-sidebar">
+      <div class="profile-card">
+        <div class="avatar-xl">U</div>
+        <div class="profile-name">影迷小张</div>
+        <div class="profile-login">@movie_fan_123</div>
+      </div>
+
+      <div class="profile-card">
+        <a href="user-profile.html" class="menu-item">👤 个人资料</a>
+        <a href="#" class="menu-item active">🎟️ 我的订单</a>
+        <a href="#" class="menu-item">🎬 观影记录</a>
+        <a href="#" class="menu-item">🎫 优惠券</a>
+        <a href="#" class="menu-item">🔔 消息通知</a>
+        <a href="#" class="menu-item">⚙️ 账户设置</a>
+      </div>
+
+      <div class="profile-card">
+        <a href="login.html" class="menu-item logout-item">🚪 退出登录</a>
+      </div>
+    </aside>
+
+    <!-- 主内容区（仅保留一个容器，初始无订单） -->
+    <main class="profile-main">
+    <div class="breadcrumb">
+        <a href="user-home.html">首页</a> / 我的订单
+    </div>
+
+    <div class="section-card">
+        <h2 class="section-title">🎟️ 我的订单</h2>
+        <div id="ordersContainer">
+        <!-- 订单将通过 JS 动态插入 -->
+        </div>
+        <div class="load-more" id="loadMoreBtn" style="display:none;">加载更多订单...</div>
+    </div>
+    </main>
+  </div>
+
+  <!-- 动态加载逻辑 -->
+  <script>
+    document.getElementById('loadMoreBtn').addEventListener('click', function () {
+      const btn = this;
+      btn.textContent = '加载中...';
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.7';
+
+      // 模拟网络请求延迟
+      setTimeout(() => {
+        // 新订单 HTML
+        const newOrderHTML = `
+          <div class="order-item">
+            <div class="order-header">
+              <div class="order-movie-title">《年会不能停！》</div>
+              <span class="order-status status-completed">已完成</span>
+            </div>
+            <div class="order-details">
+              <div class="detail-item"><strong>影院：</strong>百老汇电影中心</div>
+              <div class="detail-item"><strong>场次：</strong>2025-10-15 18:40</div>
+              <div class="detail-item"><strong>座位：</strong>A排08座</div>
+              <div class="detail-item"><strong>金额：</strong>¥58.00</div>
+            </div>
+            <div class="order-actions">
+              <a href="#" class="btn btn-outline">查看详情</a>
+            </div>
+          </div>
+        `;
+
+        // 插入到按钮之前
+        const container = document.querySelector('.section-card');
+        const range = document.createRange();
+        range.selectNode(btn);
+        const fragment = range.createContextualFragment(newOrderHTML);
+        container.insertBefore(fragment, btn);
+
+        // 移除按钮（表示已加载完毕）
+        btn.remove();
+      }, 800);
+    });
+  </script>
+
+  <script>
+  // 模拟后端所有订单数据（实际项目中由 API 返回）
+  const allOrders = [
+    {
+      title: "《沙丘2》",
+      status: "status-success",
+      cinema: "UME影城（朝阳大悦城店）",
+      time: "2025-12-05 19:30",
+      seats: "G排05座, G排06座",
+      price: "¥138.00"
+    },
+    {
+      title: "《头脑特工队2》",
+      status: "status-completed",
+      cinema: "万达影城（西单店）",
+      time: "2025-11-20 14:20",
+      seats: "D排10座",
+      price: "¥69.00"
+    },
+    {
+      title: "《异形：夺命舰》",
+      status: "status-cancelled",
+      cinema: "CGV影城（中关村店）",
+      time: "2025-11-10 21:00",
+      seats: "F排03座",
+      price: "¥75.00"
+    },
+    {
+      title: "《年会不能停！》",
+      status: "status-completed",
+      cinema: "百老汇电影中心",
+      time: "2025-10-15 18:40",
+      seats: "A排08座",
+      price: "¥58.00"
+    },
+    {
+      title: "《奥本海默》",
+      status: "status-completed",
+      cinema: "中国电影资料馆",
+      time: "2025-09-30 16:00",
+      seats: "B排12座",
+      price: "¥80.00"
+    },
+    {
+      title: "《蜘蛛侠：平行宇宙2》",
+      status: "status-waiting",
+      cinema: "耀莱成龙影城（五棵松）",
+      time: "2025-12-10 20:15",
+      seats: "H排01座",
+      price: "¥72.00"
+    },
+    {
+      title: "《芭比》",
+      status: "status-completed",
+      cinema: "当代MOMA百老汇",
+      time: "2025-08-22 19:00",
+      seats: "E排07座",
+      price: "¥65.00"
+    },
+    {
+      title: "《流浪地球3》（点映）",
+      status: "status-success",
+      cinema: "IMAX激光厅（华熙LIVE）",
+      time: "2025-12-20 21:30",
+      seats: "C排05座, C排06座",
+      price: "¥220.00"
+    }
+  ];
+
+  let loadedCount = 0;
+  const pageSize = 3; // 每次加载3条
+  const container = document.getElementById('ordersContainer');
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+  // 渲染订单项
+  function renderOrder(order) {
+    const statusText = {
+      'status-waiting': '待支付',
+      'status-success': '已出票',
+      'status-completed': '已完成',
+      'status-cancelled': '已取消'
+    }[order.status] || '未知';
+
+    return `
+      <div class="order-item">
+        <div class="order-header">
+          <div class="order-movie-title">${order.title}</div>
+          <span class="order-status ${order.status}">${statusText}</span>
+        </div>
+        <div class="order-details">
+          <div class="detail-item"><strong>影院：</strong>${order.cinema}</div>
+          <div class="detail-item"><strong>场次：</strong>${order.time}</div>
+          <div class="detail-item"><strong>座位：</strong>${order.seats}</div>
+          <div class="detail-item"><strong>金额：</strong>${order.price}</div>
+        </div>
+        <div class="order-actions">
+          <a href="#" class="btn btn-outline">查看详情</a>
+          ${order.status === 'status-success' || order.status === 'status-completed' 
+            ? '<a href="#" class="btn btn-outline">再次购票</a>' : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // 加载下一页
+  function loadNextPage() {
+    const fragment = document.createDocumentFragment();
+    const start = loadedCount;
+    const end = Math.min(start + pageSize, allOrders.length);
+
+    for (let i = start; i < end; i++) {
+      const div = document.createElement('div');
+      div.innerHTML = renderOrder(allOrders[i]);
+      fragment.appendChild(div.firstElementChild);
+    }
+
+    container.appendChild(fragment);
+    loadedCount = end;
+
+    // 判断是否还有更多
+    if (loadedCount >= allOrders.length) {
+      loadMoreBtn.style.display = 'none';
+    }
+
+    // 恢复按钮状态
+    loadMoreBtn.textContent = '加载更多订单...';
+    loadMoreBtn.style.pointerEvents = 'auto';
+    loadMoreBtn.style.opacity = '1';
+  }
+
+  // 点击加载更多
+  loadMoreBtn.addEventListener('click', function () {
+    this.textContent = '加载中...';
+    this.style.pointerEvents = 'none';
+    this.style.opacity = '0.7';
+
+    setTimeout(loadNextPage, 600);
+  });
+
+  // 首次加载
+  if (allOrders.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>暂无订单</h3>
+        <p>您还没有购买过电影票，快去挑选一部好片吧！</p>
+        <a href="user-home.html" class="btn-primary">去选电影</a>
+      </div>
+    `;
+  } else {
+    loadNextPage(); // 加载第一页
+    if (allOrders.length > pageSize) {
+      loadMoreBtn.style.display = 'block';
+    }
+  }
+</script>
+</body>
+</html>

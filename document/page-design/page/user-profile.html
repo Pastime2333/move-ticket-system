@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name=" viewport" content="width=device-width, initial-scale=1.0" />
+  <title>个人中心 - MovieTicket</title>
+  <style>
+    :root {
+      --primary: #409EFF;
+      --text: #24292f;
+      --text-muted: #586069;
+      --border: #e1e4e8;
+      --bg-canvas: #f6f8fa;
+      --bg-card: #ffffff;
+      --sidebar-width: 280px;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* 整体布局 */
+    .profile-layout {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 40px;
+      gap: 32px;
+    }
+
+    /* —————— 左侧栏 —————— */
+    .profile-sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+    }
+
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .avatar-xl {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: #999;
+      margin-bottom: 16px;
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .profile-login {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .profile-bio {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-value {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .stat-label {
+      color: var(--text-muted);
+    }
+
+    /* 菜单项 */
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      gap: 8px;
+    }
+    .menu-item:hover,
+    .menu-item.active {
+      color: var(--primary);
+    }
+    .menu-item.active {
+      position: relative;
+    }
+    .menu-item.active::before {
+      content: "";
+      position: absolute;
+      left: -16px;
+      width: 3px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* 退出登录项 */
+    .menu-item.logout-item {
+      color: #6a737d;
+      font-weight: normal;
+    }
+    .menu-item.logout-item:hover {
+      color: #d73a49;
+    }
+
+    /* —————— 主内容区 —————— */
+    .profile-main {
+      flex: 1;
+    }
+
+    .breadcrumb {
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text);
+    }
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: 1px solid var(--primary);
+    }
+    .btn-primary:hover {
+      background: #54a3ff;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-outline:hover {
+      background: #f0f7ff;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-layout">
+    <!-- 左侧栏 -->
+    <aside class="profile-sidebar">
+      <!-- 用户概览卡 -->
+      <div class="profile-card">
+        <div class="avatar-xl">U</div>
+        <div class="profile-name">影迷小张</div>
+        <div class="profile-login">@movie_fan_123</div>
+        <div class="profile-bio">热爱科幻与动画电影的普通观众</div>
+
+        <div class="profile-stats">
+          <div class="stat-item">
+            <div class="stat-value">12</div>
+            <div class="stat-label">订单</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">5</div>
+            <div class="stat-label">影院</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">收藏</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 功能导航 -->
+      <div class="profile-card">
+        <a href="#" class="menu-item active">👤 个人资料</a>
+        <a href="user-orders.html" class="menu-item">🎟️ 我的订单</a>
+        <a href="#" class="menu-item">🎬 观影记录</a>
+        <a href="#" class="menu-item">🎫 优惠券</a>
+        <a href="#" class="menu-item">🔔 消息通知</a>
+        <a href="#" class="menu-item">⚙️ 账户设置</a>
+      </div>
+
+      <!-- 退出登录 -->
+      <div class="profile-card">
+        <a href="login.html" class="menu-item logout-item">🚪 退出登录</a>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="profile-main">
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <a href="user-home.html">首页</a> / 个人中心
+      </div>
+
+      <!-- 基本信息 -->
+      <div class="section-card">
+        <h2 class="section-title">基本信息</h2>
+        <form>
+          <div class="form-group">
+            <label for="nickname">昵称</label>
+            <input type="text" id="nickname" value="影迷小张" />
+          </div>
+          <div class="form-group">
+            <label for="phone">手机号</label>
+            <input type="tel" id="phone" value="138****1234" readonly />
+          </div>
+          <div class="form-group">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" value="fan123@example.com" />
+          </div>
+          <button type="button" class="btn btn-primary">保存更改</button>
+        </form>
+      </div>
+
+      <!-- 账户安全 -->
+      <div class="section-card">
+        <h2 class="section-title">账户安全</h2>
+        <div class="form-group">
+          <label>密码</label>
+          <div>••••••••</div>
+        </div>
+        <div class="action-row">
+          <a href="#" class="btn btn-outline">修改密码</a>
+          <a href="#" class="btn btn-outline">绑定微信</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

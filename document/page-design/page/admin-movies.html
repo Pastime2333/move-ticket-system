@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>影片管理 - MovieTicket Admin</title>
+  <style>
+    :root { --el-color-primary: #409EFF; --el-bg-color: #f5f7fa; --el-border-color: #dcdfe6; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:sans-serif; }
+    body { background:var(--el-bg-color); padding:20px; }
+    .sidebar { width:200px; position:fixed; height:100vh; background:white; border-right:1px solid var(--el-border-color); padding:20px 0; }
+    .main { margin-left:220px; padding:20px; }
+    .menu-item { padding:12px 24px; cursor:pointer; color:#606266; }
+    .menu-item:hover { background:#ecf5ff; color:var(--el-color-primary); }
+    .menu-item:nth-child(2) { background:#ecf5ff; color:var(--el-color-primary); }
+    .btn-primary { padding:8px 16px; background:var(--el-color-primary); color:white; border:none; border-radius:4px; cursor:pointer; margin-bottom:20px; }
+    table { width:100%; border-collapse:collapse; background:white; margin-top:10px; border-radius:8px; overflow:hidden; }
+    th, td { padding:12px; text-align:left; border-bottom:1px solid var(--el-border-color); }
+    th { background:#f8f9fa; }
+    .tag.success { background:#f0f9eb; color:#67C23A; padding:2px 8px; border-radius:10px; font-size:12px; }
+    .tag.danger { background:#fef0f0; color:#F56C6C; padding:2px 8px; border-radius:10px; font-size:12px; }
+    .btn-outline { padding:4px 10px; background:transparent; border:1px solid var(--el-color-primary); color:var(--el-color-primary); border-radius:4px; cursor:pointer; margin-right:6px; }
+    .btn-danger { padding:4px 10px; background:#fef0f0; color:#F56C6C; border:none; border-radius:4px; cursor:pointer; }
+
+    
+  </style>
+  <style>
+  /* 模态框遮罩 */
+  .modal-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none; /* 默认隐藏 */
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  /* 模态框主体 */
+  .modal {
+    width: 600px;
+    background: white;
+    border-radius: 10px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #303133;
+  }
+
+  .modal-row {
+    margin-bottom: 14px;
+  }
+
+  .modal-row label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #606266;
+  }
+
+  .modal-row input,
+  .modal-row textarea,
+  .modal-row select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--el-border-color);
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .modal-row textarea {
+    resize: vertical;
+    height: 80px;
+  }
+
+  .modal-footer {
+    text-align: right;
+    margin-top: 16px;
+  }
+
+  .btn-cancel {
+    padding: 8px 16px;
+    border: 1px solid #dcdfe6;
+    background: white;
+    color: #606266;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  .btn-cancel:hover {
+    background: #f5f7fa;
+  }
+</style>
+
+</head>
+<body>
+  <div class="sidebar">
+    <div style="padding:0 24px 20px; font-weight:bold; color:var(--el-color-primary);">MovieTicket Admin</div>
+    <div class="menu-item">仪表盘</div>
+    <div class="menu-item">影片管理</div>
+    <div class="menu-item">排片管理</div>
+    <div class="menu-item">订单管理</div>
+    <div class="menu-item">用户管理</div>
+  </div>
+
+  <div class="main">
+    <h1>🎬 影片管理</h1>
+    <p style="color:#606266; margin-bottom:16px;">维护影片基本信息，控制上映/下架状态</p>
+
+    <button class="btn-primary">+ 新增影片</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>海报</th>
+          <th>片名</th>
+          <th>导演</th>
+          <th>类型</th>
+          <th>时长</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div style="width:60px; height:80px; background:#eee; border-radius:4px;"></div></td>
+          <td>奥本海默</td>
+          <td>克里斯托弗·诺兰</td>
+          <td>传记 / 历史</td>
+          <td>180分钟</td>
+          <td><span class="tag.success">上映中</span></td>
+          <td>
+            <button class="btn-outline">编辑</button>
+            <button class="btn-danger">下架</button>
+          </td>
+        </tr>
+        <tr>
+          <td><div style="width:60px; height:80px; background:#eee; border-radius:4px;"></div></td>
+          <td>沙丘2</td>
+          <td>丹尼斯·维伦纽瓦</td>
+          <td>科幻 / 冒险</td>
+          <td>166分钟</td>
+          <td><span class="tag.success">上映中</span></td>
+          <td>
+            <button class="btn-outline">编辑</button>
+            <button class="btn-danger">下架</button>
+          </td>
+        </tr>
+        <tr>
+          <td><div style="width:60px; height:80px; background:#eee; border-radius:4px;"></div></td>
+          <td>死侍3</td>
+          <td>肖恩·利维</td>
+          <td>动作 / 喜剧</td>
+          <td>120分钟</td>
+          <td><span class="tag.danger">未上映</span></td>
+          <td>
+            <button class="btn-outline">编辑</button>
+            <button class="btn-primary" style="padding:4px 8px; font-size:13px;">上架</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 新增影片模态框 -->
+<div class="modal-mask" id="modalAddMovie">
+  <div class="modal">
+    <div class="modal-header">新增影片</div>
+
+    <div class="modal-body">
+
+      <div class="modal-row">
+        <label>影片中文名 *</label>
+        <input id="m-title" type="text" placeholder="请输入影片名称" required>
+      </div>
+
+      <div class="modal-row">
+        <label>原始片名（英文名等）</label>
+        <input id="m-original-title" type="text" placeholder="如：Oppenheimer">
+      </div>
+
+      <div class="modal-row">
+        <label>TMDB ID（可选）</label>
+        <input id="m-tmdb-id" type="number" placeholder="第三方 TMDb 影片唯一ID">
+      </div>
+
+      <div class="modal-row">
+        <label>片长（分钟） *</label>
+        <input id="m-duration" type="number" placeholder="例如：150">
+      </div>
+
+      <div class="modal-row">
+        <label>上映日期（中国大陆） *</label>
+        <input id="m-release" type="date">
+      </div>
+
+      <div class="modal-row">
+        <label>语言</label>
+        <input id="m-language" type="text" placeholder="如 Chinese / English">
+      </div>
+
+      <div class="modal-row">
+        <label>制片国家或地区</label>
+        <input id="m-country" type="text" placeholder="如 China / USA">
+      </div>
+
+      <div class="modal-row">
+        <label>内容分级</label>
+        <input id="m-rating" type="text" placeholder="如 PG-13">
+      </div>
+
+      <div class="modal-row">
+        <label>剧情简介</label>
+        <textarea id="m-synopsis" placeholder="请输入影片剧情简介"></textarea>
+      </div>
+
+      <div class="modal-row">
+        <label>海报图片 URL *</label>
+        <input id="m-poster" type="text" placeholder="https://example.com/poster.jpg">
+      </div>
+
+      <div class="modal-row">
+        <label>背景图 URL</label>
+        <input id="m-backdrop" type="text" placeholder="https://example.com/backdrop.jpg">
+      </div>
+
+      <div class="modal-row">
+        <label>影片状态 *</label>
+        <select id="m-status">
+          <option value="upcoming">即将上映</option>
+          <option value="released">已上映</option>
+          <option value="removed">已下架</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeAddMovie()">取消</button>
+      <button class="btn-primary" onclick="submitMovie()">保存</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // 打开新增影片模态框
+  document.querySelector(".btn-primary").onclick = function () {
+    document.getElementById("modalAddMovie").style.display = "flex";
+  };
+
+  // 关闭模态框
+  function closeAddMovie() {
+    document.getElementById("modalAddMovie").style.display = "none";
+  }
+
+  // 保存新增影片
+  function submitMovie() {
+    const data = {
+      title: document.getElementById("m-title").value.trim(),
+      original_title: document.getElementById("m-original-title").value.trim(),
+      tmdb_id: document.getElementById("m-tmdb-id").value.trim(),
+      duration: document.getElementById("m-duration").value,
+      release_date: document.getElementById("m-release").value,
+      language: document.getElementById("m-language").value.trim(),
+      country: document.getElementById("m-country").value.trim(),
+      rating: document.getElementById("m-rating").value.trim(),
+      synopsis: document.getElementById("m-synopsis").value.trim(),
+      poster_url: document.getElementById("m-poster").value.trim(),
+      backdrop_url: document.getElementById("m-backdrop").value.trim(),
+      status: document.getElementById("m-status").value
+    };
+
+    // 基础校验
+    if (!data.title) return alert("影片名称不能为空");
+    if (!data.duration) return alert("请填写片长");
+    if (!data.release_date) return alert("请选择上映日期");
+    if (!data.poster_url) return alert("请填写海报 URL");
+
+    // 这里你可加入 Ajax 或 Fetch 提交到后端
+    console.log("新增影片：", data);
+
+    alert("影片已成功添加！");
+
+    closeAddMovie();
+  }
+</script>
+
+</body>
+</html>

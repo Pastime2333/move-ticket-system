@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>选座 - MovieTicket</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", Helvetica, Arial, sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .header {
+      margin-bottom: 32px;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .movie-info {
+      font-size: 18px;
+      margin-top: 12px;
+      color: #333;
+    }
+
+    /* 银幕 */
+    .screen-label {
+      text-align: center;
+      margin: 24px 0 32px;
+      color: #888;
+      font-size: 14px;
+      letter-spacing: 3px;
+    }
+    .screen-bar {
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      margin: 0 auto 16px;
+      width: 80%;
+    }
+
+    /* 座位 */
+    .seats {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .row-label {
+      width: 24px;
+      font-weight: bold;
+      color: #555;
+      text-align: right;
+    }
+    .seat {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+    .seat.available {
+      background: #f8f9fa;
+      color: #333;
+    }
+    .seat.available:hover {
+      background: #e6f7ff;
+      border-color: #1890ff;
+    }
+    .seat.selected {
+      background: #1890ff;
+      color: white;
+      border-color: #1890ff;
+    }
+    .seat.sold {
+      background: #f0f0f0;
+      color: #ccc;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    /* 图例 */
+    .legend {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #666;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+    }
+    .legend-available { background: #f8f9fa; }
+    .legend-sold { background: #f0f0f0; color: #ccc; }
+    .legend-selected { background: #1890ff; color: white; }
+
+    /* 摘要 & 按钮 */
+    .summary {
+      background: #f9f9f9;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    .selected-seats {
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e50914;
+    }
+    .confirm-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      background: #e50914;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .confirm-btn:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+    .confirm-btn:not(:disabled):hover {
+      background: #c20710;
+    }
+
+    @media (max-width: 600px) {
+      .seat { width: 34px; height: 34px; font-size: 11px; }
+      .row-label { width: 20px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="user-home.html" class="logo">🎬 MovieTicket</a>
+      <div class="movie-info" id="movie-info">《奥本海默》 · 2025-12-01 19:00 · 3号厅</div>
+    </div>
+
+    <div class="screen-label">银幕</div>
+    <div class="screen-bar"></div>
+
+    <div class="seats" id="seat-container"></div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-color legend-available"></div><span>可选</span></div>
+      <div class="legend-item"><div class="legend-color legend-sold"></div><span>已售</span></div>
+      <div class="legend-item"><div class="legend-color legend-selected"></div><span>已选</span></div>
+    </div>
+
+    <div class="summary">
+      <div class="selected-seats">已选座位：<span id="selected-list">无</span></div>
+      <div class="price">票价：<span id="total-price">¥0</span></div>
+    </div>
+
+    <button id="confirm-btn" class="confirm-btn" disabled>确认选座</button>
+  </div>
+
+  <script>
+    // 从 URL 获取影片信息（来自 movie-detail 页面）
+    const urlParams = new URLSearchParams(window.location.search);
+    const movie = urlParams.get('movie') || '奥本海默';
+    const date = urlParams.get('date') || '2025-12-01';
+    const time = urlParams.get('time') || '19:00';
+    const hall = '3号厅';
+
+    document.getElementById('movie-info').textContent = `${movie} · ${date} ${time} · ${hall}`;
+
+    // 模拟座位数据（实际应来自 API）
+    const seatData = {
+      rows: ['A', 'B'],
+      cols: 10,
+      sold: ['A1', 'A3', 'A4', 'A6', 'A7', 'A8', 'A9', 'A10', 'B1', 'B2', 'B3', 'B4', 'B6', 'B7', 'B8', 'B9', 'B10']
+    };
+
+    const pricePerSeat = 45;
+    let selectedSeats = [];
+
+    const seatContainer = document.getElementById('seat-container');
+    const selectedListEl = document.getElementById('selected-list');
+    const totalPriceEl = document.getElementById('total-price');
+    const confirmBtn = document.getElementById('confirm-btn');
+
+    function renderSeats() {
+      seatContainer.innerHTML = '';
+      seatData.rows.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+        const label = document.createElement('div');
+        label.className = 'row-label';
+        label.textContent = row;
+        rowDiv.appendChild(label);
+
+        for (let col = 1; col <= seatData.cols; col++) {
+          const seatId = `${row}${col}`;
+          const seat = document.createElement('div');
+          seat.textContent = col;
+
+          if (seatData.sold.includes(seatId)) {
+            seat.className = 'seat sold';
+          } else {
+            seat.className = 'seat available';
+            seat.addEventListener('click', () => toggleSeat(seatId, seat));
+          }
+          rowDiv.appendChild(seat);
+        }
+        seatContainer.appendChild(rowDiv);
+      });
+      updateSummary();
+    }
+
+    function toggleSeat(seatId, element) {
+      const index = selectedSeats.indexOf(seatId);
+      if (index > -1) {
+        selectedSeats.splice(index, 1);
+        element.className = 'seat available';
+      } else {
+        selectedSeats.push(seatId);
+        element.className = 'seat selected';
+      }
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const count = selectedSeats.length;
+      if (count === 0) {
+        selectedListEl.textContent = '无';
+        totalPriceEl.textContent = '¥0';
+        confirmBtn.disabled = true;
+      } else {
+        selectedListEl.textContent = selectedSeats.join(', ');
+        totalPriceEl.textContent = `¥${pricePerSeat} × ${count} = ¥${count * pricePerSeat}`;
+        confirmBtn.disabled = false;
+      }
+    }
+
+    confirmBtn.addEventListener('click', () => {
+      if (selectedSeats.length === 0) return;
+      const params = new URLSearchParams({
+        movie: movie,
+        date: date,
+        time: time,
+        seats: selectedSeats.join(',')
+      });
+      window.location.href = `checkout.html?${params.toString()}`;
+    });
+
+    renderSeats();
+  </script>
+</body>
+</html>
